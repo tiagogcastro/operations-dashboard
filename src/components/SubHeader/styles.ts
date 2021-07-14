@@ -1,15 +1,5 @@
 import styled from 'styled-components';
 
-
-/* 
-#081DB4
-#1690F4
-#EFEFEF
-#FFFFFF
-#000000
-#23DEFF
-*/
-
 export const Container = styled.header`
   width: 100%;
   background: #111;

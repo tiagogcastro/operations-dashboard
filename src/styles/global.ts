@@ -12,6 +12,15 @@ export default createGlobalStyle`
     font-family: 'Roboto', sans-serif;
     font-size: 62.5%;
   }
+  :root {
+    --dark-blue: #081DB4;
+    --semi-blue: #1690F4;
+    --semi-white: #EFEFEF;
+    --full-white: #FFFFFF;
+    --dark-blue: #000000;
+    --cyan: #23DEFF;
+    --font-cyan-blue: #334155;
+  }
 
   #root {
     width: 100%;
@@ -25,8 +34,8 @@ export default createGlobalStyle`
   }
 
   body {
-    background: #F4F4F4;
-    color: #334155;
+    background: var(--semi-white);
+    color: var(--font-cyan-blue);
     height: 100vh;
     -webkit-font-smoothing: antialiased;
   }
@@ -42,6 +51,6 @@ export default createGlobalStyle`
   
   button, a {
     cursor: pointer;
-    color: #F4F4F4;
+    color: var(--semi-white);
   }
 `

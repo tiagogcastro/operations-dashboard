@@ -66,7 +66,7 @@ export const Content = styled.div`
     > button {
       margin-top: 3rem;
       border-radius: 8px;
-      background: rgba(128, 70, 251);
+      background: var(--semi-blue);
       font-size: 1.6rem;
       padding: 16px;
       max-width: 230px;

@@ -35,7 +35,7 @@ export const Content = styled.header<ContentProps>`
     .dropdown-menu {
       display: none;
       position: absolute;
-      background-color: #f1f1f1;
+      background-color: var(--full-white);
       min-width: 160px;
       top: 36px;
       left: 0;
@@ -43,8 +43,11 @@ export const Content = styled.header<ContentProps>`
       z-index: 1;
       border-radius: 8px;
 
+      button {
+        background: none;
+      }
       a, button {
-        color: black;
+        color: var(--font-cyan-blue);
         padding: 12px 16px;
         font-size: 1.6rem;
         width: 100%;
@@ -52,8 +55,8 @@ export const Content = styled.header<ContentProps>`
         text-decoration: none;
         display: block;
         border-radius: 8px;
-        :hover {
-          background-color: #c4c4c4;
+        &:hover {
+          background-color: var(--semi-white);
         }
       }
     }
