@@ -19,7 +19,7 @@ export const Content = styled.header<ContentProps>`
   align-items: center;
   justify-content: space-between;
 
-  > img {
+  > a img {
     max-width: 100px;
   }
 
