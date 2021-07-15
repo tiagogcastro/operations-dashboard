@@ -1,7 +1,7 @@
 type AppUrlConfig = {
-  url: ''| '?redirect=https://dlombello-test.netlify.app/token';
+  url: '?redirect=https://dlombello-test.netlify.app/token' | '';
 }
 
 export default {
-  url: process.env.APP_WEB_URL || '',
+  url: process.env.APP_WEB_URL,
 } as AppUrlConfig;
