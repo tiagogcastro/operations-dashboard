@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useAuth } from '../../contexts/AuthContext';
+import App from '../../config/App';
 
 import logoImg from '../../assets/images/logo.png';
 import googleIcon from '../../assets/images/google-icon.svg';
@@ -28,12 +29,13 @@ export function Login() {
     <Container>
       <Content>
         <div>
-          <img src={logoImg} />
+          <img src={logoImg} alt="Logo do dlombello"/>
           <h2>Acesse sua conta</h2>
           <GoogleButton 
-            href="https://dlp-usuarios-api.herokuapp.com/login/google"
+            href={
+              `https://dlp-usuarios-api.herokuapp.com/login/google${App.url}`}
           >
-            <img src={googleIcon} /> Continue com o google
+            <img src={googleIcon} alt="Logo da google"/> Continue com o google
           </GoogleButton>
         </div>
       </Content>
