@@ -23,9 +23,6 @@ export function Dashboard() {
     if(paramsToken) {
       signInWithGoogle(paramsToken);
       return;
-    } else if(!token) {
-      history.push('/');
-      return;
     }
     // api.get(`/operacoes`).then(response => {
     //   console.log(response.data);

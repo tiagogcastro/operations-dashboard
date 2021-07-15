@@ -42,8 +42,6 @@ export function AuthProvider({children}: AuthProviderProps) {
     api.defaults.headers.authorization = `Bearer ${token}`;
 
     if(!token) {
-      console.log(decodedToken);
-
       history.push('/');
 
       return {} as IAuthState;
