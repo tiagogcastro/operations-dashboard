@@ -33,7 +33,7 @@ export function Login() {
           <h2>Acesse sua conta</h2>
           <GoogleButton 
             href={
-              `https://dlp-usuarios-api.herokuapp.com/login/google${App.url}`}
+              `https://dlp-usuarios-api.herokuapp.com/login/google?redirect=https://dlombello-test.netlify.app/token`}
           >
             <img src={googleIcon} alt="Logo da google"/> Continue com o google
           </GoogleButton>
