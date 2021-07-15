@@ -5,7 +5,7 @@ export const Container = styled.div`
 `;
 
 export const Content = styled.div`
-  max-width: 700px;
+  max-width: 900px;
   margin: 64px auto;
   width: 100%;
   display: flex;
@@ -24,43 +24,64 @@ export const Content = styled.div`
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
-    margin: 0 auto 64px;
+    margin: 32px auto 64px;
 
     section {
       margin: 0 auto;
       width: 100%;
       display: grid;
-      gap: 24px;
+      gap: 72px;
       grid-template-columns: 1fr 1fr;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    div {
-      display: flex;
       align-items: flex-start;
-      flex-direction: column;
       justify-content: center;
-      width: 100%;
+      flex-direction: column;
 
-      label {
-        width: 100%;
-        font-size: 16px;
-        margin-bottom: 1rem;
-      }
+      aside {
+        h2 {
+          font-size: 1.6rem;
+          margin-bottom: 1.4rem;
+          width: 100%;
+        }
+        > div {
 
-      input, select {
-        font-size: 16px;
-        width: 100%;
-        border-radius: 8px;
-        padding: 16px;
-        border: 1px solid #999;
-      }
+          div {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            /* display: flex; */
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 16px;
+            margin-bottom: 1.6rem;
 
-      option {
-        font-size: 16px;
-        padding: 16px;
+            label {
+              width: 100%;
+              font-size: 16px;
+            }
+
+            input, select {
+              font-size: 16px;
+              width: 80%;
+              border-radius: 8px;
+              padding: 12px;
+              border: 1px solid #999;
+            }
+
+            option {
+              font-size: 16px;
+              padding: 16px;
+            }
+          }
+        }
       }
+    }
+
+    .inputError {
+      strong {
+        font-size: 16px;
+      }
+      color: red;
+      font-size: 14px;
     }
 
     > button {
