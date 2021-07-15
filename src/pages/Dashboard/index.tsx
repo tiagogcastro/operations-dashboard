@@ -29,7 +29,7 @@ export function Dashboard() {
     // });
 
   }, [paramsToken, token, history, signInWithGoogle]);
-
+  
   return (
     <Container>
       <Header 

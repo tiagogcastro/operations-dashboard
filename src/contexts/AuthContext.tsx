@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import Cookie from 'js-cookie';
 import { useJwt } from "react-jwt";
 
@@ -34,32 +34,28 @@ export function AuthProvider({children}: AuthProviderProps) {
   const [user, setUser] = useState<User>();
   const history = useHistory();
 
-  let token = String(Cookie.get('@dlombello-withlogin:token'));
+  let token = Cookie.get('@dlombello-withlogin:token');
 
-  const { decodedToken, isExpired } = useJwt(token);
+  const { decodedToken, isExpired } = useJwt(String(token));
 
   const [data, setData] = useState(() => {
     api.defaults.headers.authorization = `Bearer ${token}`;
 
-    if(!token) {
-      history.push('/');
-
-      return {} as IAuthState;
-
-    } else if(token && isExpired){
+    if(token && isExpired){
       api.post('/refresh/token/google', {
         refresh_token: decodedToken.refresh_token
       }).then(response => {
         token = response.data; // retorna o token
       }).catch(() => {
         signOut();
-        history.push('/');
         return;
       });
       
       return {token, user} as IAuthState;
     }
   });
+
+  
 
   const signInWithGoogle = useCallback((token: string) => {
     // 1 hora em 1 dia -> 0.04166667
@@ -80,6 +76,20 @@ export function AuthProvider({children}: AuthProviderProps) {
     setData({} as IAuthState);
     return;
   }, [history]);
+
+  useEffect(() => {
+    api.get('/usuario').then(response => {
+      setUser(response.data);
+    });
+
+    const token = Cookie.get('@dlombello-withlogin:token');
+    setData({token} as IAuthState);
+
+    if(!token) {
+      history.push('/');
+    }
+    return;
+  }, []);
 
   return (
     <AuthContext.Provider value={{user, token: data?.token, signOut, signInWithGoogle}}>
