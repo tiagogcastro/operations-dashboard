@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { useAuth } from '../../contexts/AuthContext';
-import { api } from '../../services/api';
 
 import { Header } from '../../components/Header';
 import { SubHeader } from '../../components/SubHeader';
@@ -12,20 +11,13 @@ import {
   Content
 } from './styles';
 
-type User = {
-  email?: string;
-  id?: string;
-  imagem: string;
-  nome: string;
-}
-
 export function Dashboard() {
   const history = useHistory();
   const location = useLocation();
-  const {signInWithGoogle, token} = useAuth();
+  const {signInWithGoogle, token, user} = useAuth();
   const paramsToken = location.search.replace('?jwt=', '');
 
-  const [user, setUser] = useState<User>();
+  // const [user, setUser] = useState<User>();
 
   useEffect(() => {
     if(paramsToken) {
@@ -39,9 +31,6 @@ export function Dashboard() {
     //   console.log(response.data);
     // });
 
-    api.get('/usuario').then(response => {
-      setUser(response.data);
-    });
   }, [paramsToken, token, history, signInWithGoogle]);
 
   return (
