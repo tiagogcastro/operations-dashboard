@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import Cookie from 'js-cookie';
-import { useJwt } from "react-jwt";
+import { useJwt, decodeToken } from "react-jwt";
 
 import { api } from '../services/api';
 import { useHistory } from 'react-router-dom';
@@ -33,29 +33,13 @@ const AuthContext = createContext<IAuthContextData>({} as IAuthContextData);
 export function AuthProvider({children}: AuthProviderProps) {
   const [user, setUser] = useState<User>();
   const history = useHistory();
-
-  let token = Cookie.get('@dlombello-withlogin:token');
-
-  const { decodedToken, isExpired } = useJwt(String(token));
-
+  const [token, setToken] = useState('');
   const [data, setData] = useState(() => {
+    let token = Cookie.get('@dlombello-withlogin:token');
     api.defaults.headers.authorization = `Bearer ${token}`;
-
-    if(token && isExpired){
-      api.post('/refresh/token/google', {
-        refresh_token: decodedToken.refresh_token
-      }).then(response => {
-        token = response.data; // retorna o token
-      }).catch(() => {
-        signOut();
-        return;
-      });
-      
-      return {token, user} as IAuthState;
-    }
+   
+    return {token, user} as IAuthState;
   });
-
-  
 
   const signInWithGoogle = useCallback((token: string) => {
     // 1 hora em 1 dia -> 0.04166667
@@ -77,18 +61,46 @@ export function AuthProvider({children}: AuthProviderProps) {
     return;
   }, [history]);
 
+  const { isExpired } = useJwt(token);
+
+  async function VerifyToken(token: string | undefined) {
+    
+    if(!token) {
+      setData({} as IAuthState);
+      history.push('/');
+      return;
+    }
+
+    const DecodedToken = await decodeToken(token);  
+   
+    setData({token} as IAuthState);
+    return DecodedToken;
+  }
+
   useEffect(() => {
-    api.get('/usuario').then(response => {
-      setUser(response.data);
+    const token = Cookie.get('@dlombello-withlogin:token');
+
+    VerifyToken(token).then(response => {
+      if(token && isExpired){
+        console.log(response);
+        api.post('/refresh/token/google', {
+          refresh_token: response.refresh_token
+        }).then(response => {
+          Cookie.set('@dlombello-withlogin:token', response.data);
+          setData({token: response.data}); // retorna o token
+        }).catch(() => {
+          signOut();
+          return;
+        });
+      }
     });
 
-    const token = Cookie.get('@dlombello-withlogin:token');
-    setData({token} as IAuthState);
-
-    if(!token) {
-      history.push('/');
+    if(token) {
+      api.get('/usuario').then(response => {
+        setUser(response.data);
+      });
     }
-    return;
+   
   }, []);
 
   return (
