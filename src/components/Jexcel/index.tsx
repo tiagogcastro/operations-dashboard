@@ -77,10 +77,10 @@ export function Jexcel() {
 
   const handleSendNewOperations = useCallback(async (operations: NewOperation[], xml_tr:any) => {
     setNewOperationLoader(true)
-    try {
 
-      const response = await api.post('/operacoes', operations);
-      
+    
+
+    api.post('/operacoes', operations).then(response => {
       setNewOperations(response.data);
       setNewOperationLoader(false);
       
@@ -89,11 +89,25 @@ export function Jexcel() {
       jRef.current.jexcel.insertRow(1);
       jRef.current.jexcel.deleteRow(0, xml_tr.length -2);
       return;
-    } catch (error) {
+    }).catch((error) => {
       setNewOperationLoader(false);
-      setError(`${error}`);
-      return;
-    } 
+      if(error.response?.status === 400) {
+        if(error.response.data.error.op_normal[0][0]) {
+          setError(error.response.data.error.op_normal[0][0]); 
+          return;
+        } else {
+          setError(error.response.data.error.op_normal[0][1]); 
+          return;
+        }
+      } else if(error.response?.status === 402) {
+        setError(error.response.data.error[0]['1']);
+        return;
+      } else {
+        setError('Erro desconhecido.');
+        return;
+      }
+    });
+
   }, []);
   
   const handleInsertNewOperations = async () => {
