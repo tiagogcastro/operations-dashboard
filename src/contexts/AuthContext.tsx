@@ -1,9 +1,10 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import Cookie from 'js-cookie';
-import { useJwt, decodeToken } from "react-jwt";
+import { decodeToken } from "react-jwt";
 
 import { api } from '../services/api';
 import { useHistory } from 'react-router-dom';
+import {AxiosError} from 'axios';
 
 type User = {
   email?: string;
@@ -33,7 +34,46 @@ const AuthContext = createContext<IAuthContextData>({} as IAuthContextData);
 export function AuthProvider({children}: AuthProviderProps) {
   const [user, setUser] = useState<User>();
   const history = useHistory();
-  const [token, setToken] = useState('');
+    
+  const signOut = useCallback(() => {
+    Cookie.remove('@dlombello-withlogin:token');
+
+    history.push('/');
+
+    setData({} as IAuthState);
+    return;
+  }, [history]);
+
+  useEffect(() => {
+    const token = Cookie.get('@dlombello-withlogin:token');
+    if(!token) {
+      setData({} as IAuthState);
+      history.push('/');
+      return;
+    }
+    api.interceptors.response.use((response) => response, async (error: AxiosError) => {
+      const DecodedToken = await decodeToken(token);  
+
+      if(error.response?.status === 401) {
+        api.post('/refresh/token/google', {
+          refresh_token: DecodedToken.refresh_token
+        }).then(response => {
+          Cookie.set('@dlombello-withlogin:token', response.data);
+          api.defaults.headers.authorization = `Bearer ${response.data}`;
+          setData({token: response.data}); // retorna o token
+        }).catch(() => {
+          signOut();
+          return;
+        });
+      }
+    });
+
+    api.get('/usuario').then(response => {
+      setUser(response.data);
+    });
+
+  }, [history, signOut]);
+
   const [data, setData] = useState(() => {
     let token = Cookie.get('@dlombello-withlogin:token');
     api.defaults.headers.authorization = `Bearer ${token}`;
@@ -50,57 +90,6 @@ export function AuthProvider({children}: AuthProviderProps) {
     api.get('/usuario').then(response => {
       setUser(response.data);
     });
-  }, []);
-
-  const signOut = useCallback(() => {
-    Cookie.remove('@dlombello-withlogin:token');
-
-    history.push('/');
-
-    setData({} as IAuthState);
-    return;
-  }, [history]);
-
-  const { isExpired } = useJwt(token);
-
-  async function VerifyToken(token: string | undefined) {
-    
-    if(!token) {
-      setData({} as IAuthState);
-      history.push('/');
-      return;
-    }
-
-    const DecodedToken = await decodeToken(token);  
-   
-    setData({token} as IAuthState);
-    return DecodedToken;
-  }
-
-  useEffect(() => {
-    const token = Cookie.get('@dlombello-withlogin:token');
-
-    VerifyToken(token).then(response => {
-      if(token && isExpired){
-        console.log(response);
-        api.post('/refresh/token/google', {
-          refresh_token: response.refresh_token
-        }).then(response => {
-          Cookie.set('@dlombello-withlogin:token', response.data);
-          setData({token: response.data}); // retorna o token
-        }).catch(() => {
-          signOut();
-          return;
-        });
-      }
-    });
-
-    if(token) {
-      api.get('/usuario').then(response => {
-        setUser(response.data);
-      });
-    }
-   
   }, []);
 
   return (
