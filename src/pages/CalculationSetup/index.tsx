@@ -43,13 +43,6 @@ export function CalculationSetup() {
   const { register, handleSubmit } = useForm();
   const [inputErrors, setInputErrors] = useState<InputErrors>()
 
-  useEffect(() => {
-    api.get('/usuario/config').then(response => {
-      setUserConfig(response.data);
-      console.log(response.data);
-    });
-  }, [])
-  
   const handleUpdateUserConfiguration = useCallback((data: UserConfig) => {
     setLoader(true);
 
@@ -87,8 +80,18 @@ export function CalculationSetup() {
       setUserConfig(response.data);
       console.log(response.data);
       setLoader(false);
+
+      api.get('/usuario/config').then(response => {
+        setUserConfig(response.data);
+      });
     });
   }, []);
+
+  useEffect(() => {
+    api.get('/usuario/config').then(response => {
+      setUserConfig(response.data);
+    });
+  }, [])
 
   return (
     <Container>
@@ -110,7 +113,6 @@ export function CalculationSetup() {
                     <option value={1}>true</option>
                     <option value={0}>false</option>
                   </select>
-                  {/* <input type="checkbox" checked={userConfig?.dt_vd20k === Boolean(1)} {...register("dt_vd20k")} defaultValue={Number(userConfig?.dt_vd20k)}/> */}
                 </div>
                 <div>
                   <label>Somar vendas de opções classes no limite 20k</label>
@@ -156,39 +158,23 @@ export function CalculationSetup() {
               <div>
                 <div>
                   <label>Ano de início dos calculos DARF (ex. 2020)</label>
-                  <input {...register("darf_inicio")} type="number" defaultValue={userConfig?.darf_inicio } />
+                  <input {...register("darf_inicio")} type="number" defaultValue={userConfig?.darf_inicio} />
                 </div>
                 <div>
                   <label>Prejuízo normal até inicio DARF (negativo)</label>
-                  {/* <select {...register("tributavel_normal")}  defaultValue={userConfig?.tributavel_normal}>
-                    <option value={0}>false</option>
-                    <option value={1}>true</option>
-                  </select> */}
-                  <input {...register("tributavel_normal")} type="number" defaultValue={userConfig?.tributavel_normal} />
+                  <input {...register("tributavel_normal")} type="text" defaultValue={userConfig?.tributavel_normal} />
                 </div>
                 <div>
                   <label>Prejuízo daytrade até inicio DARF (negativo)</label>
-                  {/* <select {...register("tributavel_daytrade")} defaultValue={userConfig?.tributavel_daytrade}>
-                    <option value={0}>false</option>
-                    <option value={1}>true</option>
-                  </select> */}
-                  <input {...register("tributavel_daytrade")} type="number" defaultValue={userConfig?.tributavel_daytrade} />
+                  <input {...register("tributavel_daytrade")} type="text" defaultValue={userConfig?.tributavel_daytrade} />
                 </div>
                 <div>
                   <label>Prejuízo FII até inicio da DARF (negativo)</label>
-                  {/* <select {...register("tributavel_fii")} defaultValue={userConfig?.tributavel_fii}>
-                    <option value={0}>false</option>
-                    <option value={1}>true</option>
-                  </select> */}
-                  <input {...register("tributavel_fii")} type="number" defaultValue={userConfig?.tributavel_fii} />
+                  <input {...register("tributavel_fii")} type="text" defaultValue={userConfig?.tributavel_fii} />
                 </div>
                 <div>
                   <label>Saldo de DARF a pagar até inicio DARF (positivo)</label>
-                  {/* <select {...register("darf_total")} defaultValue={userConfig?.darf_total}>
-                    <option value={0}>false</option>
-                    <option value={1}>true</option>
-                  </select> */}
-                  <input {...register("darf_total")} type="number" defaultValue={userConfig?.darf_total} />
+                  <input {...register("darf_total")} type="text" defaultValue={userConfig?.darf_total} />
                 </div>
               </div>
             </aside>
