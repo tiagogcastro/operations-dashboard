@@ -11,10 +11,10 @@ export function SubHeader() {
       <Content>
         <Link to="/token">Dashboard</Link>
         <Link to="/operacoes">Operações</Link>
-        <Link to="/proventos">Proventos</Link>
-        <Link to="/eventos">Eventos</Link>  
-        <Link to="/cei">Cei</Link>  
-        <Link to="/ajuda">Ajuda</Link>  
+        {/* <Link to="/proventos">Proventos</Link> */}
+        {/* <Link to="/eventos">Eventos</Link>   */}
+        {/* <Link to="/cei">Cei</Link>   */}
+        {/* <Link to="/ajuda">Ajuda</Link>   */}
       </Content>
     </Container>
   );
