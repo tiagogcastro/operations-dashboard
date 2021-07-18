@@ -1,9 +1,9 @@
-import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import jspreadsheet from 'jspreadsheet-ce';
 
 import { api } from '../../services/api';
 
-import Events from '../../config/Events';
+import {Events} from '../../config/Events';
 
 import "../../../node_modules/jspreadsheet-ce/dist/jspreadsheet.css";
 import {
@@ -12,7 +12,6 @@ import {
   JexcelTable
 } from './styles';
 import { useNewOperation } from '../../contexts/NewOperationsContext';
-import { AxiosError } from 'axios';
 
 export type NewOperation = {
   ativo: string
@@ -78,8 +77,6 @@ export function Jexcel() {
   const handleSendNewOperations = useCallback(async (operations: NewOperation[], xml_tr:any) => {
     setNewOperationLoader(true)
 
-    
-
     api.post('/operacoes', operations).then(response => {
       setNewOperations(response.data);
       setNewOperationLoader(false);
@@ -91,16 +88,18 @@ export function Jexcel() {
       return;
     }).catch((error) => {
       setNewOperationLoader(false);
+      
       if(error.response?.status === 400) {
         if(error.response.data.error.op_normal[0][0]) {
           setError(error.response.data.error.op_normal[0][0]); 
           return;
         } else {
+          console.log(error.response.data.error.op_normal[0][1])
           setError(error.response.data.error.op_normal[0][1]); 
           return;
         }
       } else if(error.response?.status === 402) {
-        setError(error.response.data.error[0]['1']);
+        setError(error.response.data.error[0][1]);
         return;
       } else {
         setError('Erro desconhecido.');
@@ -108,7 +107,7 @@ export function Jexcel() {
       }
     });
 
-  }, []);
+  }, [setNewOperations]);
   
   const handleInsertNewOperations = async () => {
     var table = jRef.current.jexcel.table;
@@ -153,15 +152,9 @@ export function Jexcel() {
       if (i === 0) {
         continue;
       }
-   
-      // if (!row.ativo || !row.corretora || !row.date || !row.evento || !row.irrf || !row.moeda || !row.preco || !row.qtd || !row.taxas) {
-      //   setError('Somente observação pode ser vazio');
-      //   return;
-      // }
 
       result.push(row);
     }
-
     if(result.length === 0) {
       return;
     }
