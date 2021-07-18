@@ -1,5 +1,4 @@
-export default
-{
+export const Events = {
   "cei": {
     "operacoes": {
       "Compra": "C",
@@ -247,4 +246,4 @@ export default
       "razao_social": "XP INVESTIMENTOS CCTVM S.A."
     }
   }
-}
+};
