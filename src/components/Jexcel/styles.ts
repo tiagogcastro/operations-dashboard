@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.section`
-  margin: 64px auto;
+  margin: 16px auto;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -46,64 +46,21 @@ export const Content = styled.section`
 
 export const JexcelTable = styled.div`
 
-  table {
-    font-size: 2rem;
-    thead {
-      tr {
-        font-size: 3rem;
-      }
+  tr {
+    td {
+      font-size: 2rem;
     }
-    
-    tbody {
-      div {
-        display: block;
-        gap: 0;
-      }
-      tr {
-        font-size: 3rem;
-        td {
-          .jdropdown {
-            .jdropdown-container {
-              position: relative;
-              .jdropdown-content {
-                z-index: 10;
-                position: absolute;
-                border-radius: 0 0 8px 8px;
-                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                
-                .jdropdown-item {
-                  font-size: 12px;
-                  width: 100%;
-                  padding: 10px;
-                  cursor: pointer;
-                  background: var(--semi-blue);
-                  color: var(--semi-white);
-                  transition: background 0.2s;
-                  font-size: 2rem;
-                  border-bottom: 1px solid #c4c4c4;
-
-                  &:hover {
-                    background: #c4c4c4;
-                  }
-                }
-              }
-            }
-          }
-          z-index: 5;
-          .jcalendar.jcalendar-container.jcalendar-focus {
-            position: absolute;
-            background: var(--semi-white);
-            border: 1px solid var(--font-cyan-blue);
-          }
-        }
-
-        td.editor {
-          /* font-size: 3rem; */
-        }
-      }
+  }
+  
+  tbody {
+    div {
+      display: block;
+      gap: 0;
+      font-size: 1.2rem;
+    }
+    tr {
+      font-size: 3rem;
+      
     }
   }
 `;
