@@ -13,10 +13,6 @@ export const Content = styled.div`
   margin: 0 auto;
   padding: 0 0 128px;
   
-  > h1 {
-    font-size: 3.2rem;
-  }
-
   > p {
     color: red;
     font-size: 1.6rem;
@@ -24,31 +20,38 @@ export const Content = styled.div`
     margin: 1rem 0;
   }
 
-  div {
+  > div {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 12px;
     align-items: center;
+    width: 100%;
 
+      div {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      > button {
+        font-size: 1.6rem;
+        background: var(--semi-blue);
+        color: var(--semi-white);
+        border-radius: 8px;
+        padding: 8px 14px;
+        margin: 2rem 0 1rem;
+        transition: filter 0.2s;
 
-    > button {
-      font-size: 1.6rem;
-      background: var(--semi-blue);
-      color: var(--semi-white);
-      border-radius: 8px;
-      padding: 8px 14px;
-      margin: 2rem 0 1rem;
-      transition: filter 0.2s;
-
-      &:hover {
-        filter: brightness(90%);
+        &:hover {
+          filter: brightness(90%);
+        }
+      }
+      button.delete {
+        background: var(--tomato);
       }
     }
 
-    button.delete {
-      background: var(--tomato);
+    > h1 {
+      font-size: 3.2rem;
     }
-
   }
 `;
 
@@ -59,7 +62,8 @@ export const Section = styled.section`
   justify-content: center;
   overflow-x: scroll;
   flex-direction: column;
-
+  border-left: 1px solid #dddddd;
+  border-right: 1px solid #dddddd;
 `;
 
 export const NotOperation = styled.section`
@@ -93,66 +97,82 @@ export const NotOperation = styled.section`
   }
 `;
 
-export const Table = styled.table`
-  margin: 1.6rem auto 0;
+export const Table = styled.div`
+  margin: 0 auto;
   width: 80%;
-  max-width: 1260px;
-  padding: 12px 24px;
+  max-width: 960px;
+  display: table;
+  border-collapse: separate;
 
-  thead {
-    font-size: 3.2rem;
-    tr {
+  .thead {
+    display: table-header-group;
+
+    .tr {
       background-color: #009879;
       color: #ffffff;
       text-align: left;
 
-      td {
-        padding: 12px;
+      span {
+        padding: 4px 8px;
       }
     }
   }
-
-  td {
-    border-right: 1px solid #dddddd;
-    border-bottom: 1px solid #dddddd;
-
-    &:nth-child(2) {
-      width: 50%;
-    }
-
-    p {
-      max-width: 50%;
-    }
+  .tbody {
+    display: table-row-group;
   }
 
-  tbody {
-    font-size: 3.2rem;
+  .tr {
+    display: table-row;
 
-    tr.selectedToDelete {
-      border: 1px solid red;
+    span, input {
+      font-size: 1.2rem;
+      text-align: center;
     }
-    tr {
-      button {
-        color: var(--semi-white);
-        padding: 12px;
+
+    .none {
+      display: none;
+    }
+
+    span {
+      padding: 2px 4px;
+      display: table-cell;
+      border-right: 1px solid #dddddd;
+      border-bottom: 1px solid #dddddd;
+
+      input {
+        width: 120px;
+        padding: 4px 12px;
       }
 
-      button.buttonSave {
-        background: green;
-      }
-      button.buttonEdit {
-        background: var(--semi-blue);
-      }
-      button.buttonDelete {
-        background: var(--tomato);
-      }
+      div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
 
-      td {
-        padding: 8px 12px;
+        .buttonEdit {
+          background: var(--semi-blue);
+        }
+        button.buttonDelete {
+          background: var(--tomato);
+        }
 
-        input {
-          font-size: 1.2rem;
+        button, p {
+          color: var(--semi-white);
           padding: 12px;
+          border-radius: 8px;
+          font-size: 1rem;
+          cursor: pointer;
+        }
+
+        .button {
+          background: none;
+          padding: 0;
+          margin: 0;
+          img {
+            width: 18px;
+
+          }
         }
       }
     }

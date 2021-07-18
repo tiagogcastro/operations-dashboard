@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useNewOperation } from '../../contexts/NewOperationsContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -10,15 +10,18 @@ import { SubHeader } from '../../components/SubHeader';
 import { Jexcel } from '../../components/Jexcel';
 
 import spreadsheetImage from '../../assets/images/spreadsheet.svg';
+import checkImage from '../../assets/images/check.png';
+import closeImage from '../../assets/images/close.png';
 
 import {
   Container,
   Content,
   Section,
   Table,
-  NotOperation
+  NotOperation,
 } from './styles';
-import { parse } from 'path';
+import { Form } from '@unform/web';
+import { Input } from '../../components/Input';
 
 type Operation = {
   id: string;
@@ -48,6 +51,8 @@ type Operation = {
 
 export function Operations() {
   const { user } = useAuth();
+  const formRef = useRef(null)
+
   const {newOperations} = useNewOperation();
 
   const [operations, setOperations] = useState<Operation[]>([]);
@@ -56,18 +61,18 @@ export function Operations() {
   const [recalculateOperationsLoader, setRecalculateOperationsLoader] = useState(false);
   
   const [operationsError, setOperationsError] = useState('');
-  const [classNameText, setclassNameText] = useState('');
 
-  const [selectToDeleteOperation, setSelectToDeleteOperation] = useState(['']);
   const [selectedToEdit, setselectedToEdit] = useState(['']);
 
   const handleDeleteAllOperations = useCallback(() => {
+    setDeleteAllOperationsLoader(true);
     const confirmation = window.confirm('Tem certeza que deseja deletar todas as operações?');
     if(confirmation) {
       api.delete('/operacoes/excluir/todas').then(response => {
-        console.log(response.data);
         setOperations(response.data);
+        setDeleteAllOperationsLoader(false)
       }).catch((error)=> {
+        setDeleteAllOperationsLoader(false)
         setOperationsError(error.response.data.error);
       });
     }
@@ -78,6 +83,11 @@ export function Operations() {
 
     api.put('/operacoes/recalcular').then(response => {
       setRecalculateOperationsLoader(false);
+      api.get('/operacoes').then(response => {
+        setOperations(response.data.result);
+      }).catch((error) => {
+        setOperationsError(error.response.data.error);
+      });
     }).catch((error) => {
       setOperationsError(error.response.data.error);
     });
@@ -86,53 +96,69 @@ export function Operations() {
   const handleEditOperation = useCallback((operation_id: string) => {
     if(selectedToEdit.includes(operation_id)) {
       const index = selectedToEdit.indexOf(operation_id);
+
       selectedToEdit.splice(index, index);
+
       setselectedToEdit([...selectedToEdit]);
-      console.log(selectedToEdit);
       return;
     }
     setselectedToEdit([...selectedToEdit, operation_id]);
   }, [selectedToEdit]);
 
-  // const handleSelectToDeleteOperation = useCallback((operation_id: string) => {
-  //   if(selectToDeleteOperation.includes(operation_id)) {
-  //     const index = selectToDeleteOperation.indexOf(operation_id);
-  //     selectToDeleteOperation.splice(index, index);
-  //     setSelectToDeleteOperation([...selectToDeleteOperation]);
-  //     console.log(selectToDeleteOperation);
-  //     return;
-  //   }
-  //   setSelectToDeleteOperation([...selectToDeleteOperation, operation_id]);
-  // }, [selectToDeleteOperation]);
+  const handleCloseOperation = useCallback((operation_id: string) => {
+    const index = selectedToEdit.indexOf(operation_id);
+
+    selectedToEdit.splice(index, index);
+
+    setselectedToEdit([...selectedToEdit]);
+    
+  }, [selectedToEdit]);
 
   const handleDeleteOperation = useCallback((operation_id: string) => {
-    const data = {
-      id: operation_id
-    };
-    api.delete('/operacoes/excluir', ).then(response => {
-    });
+    const confirmation = window.confirm('Tem certeza que deseja deletar esta operação?');
+
+    if(confirmation) {
+      api.delete(`/operacoes/excluir/${operation_id}` ).then(response => {
+        api.get('/operacoes').then(response => {
+          setOperations(response.data.result);
+        }).catch((error) => {
+          setOperationsError(error.response.data.error);
+        });
+      }).catch((error) => {
+        setOperationsError(error.error)
+      });
+    }
   }, []);
 
-  const handleSaveOperation = useCallback(async (operation_id: string, operation: Operation) => {
-    const data = {
-      date: operation.date,
-      evento: operation.evento,
-      qtd: operation.qtd,
-      preco: operation.preco,
-      taxas: operation.taxas,
-      moeda: operation.moeda,
-      irrf: operation.irrf,
-      observacao: operation.observacao,
+  const handleSaveOperation = useCallback((data: Operation): any => {
+    const dataParsed = {
+      date: data.date,
+      evento: data.evento,
+      irrf: Number(data.irrf),
+      moeda: data.moeda,
+      preco: Number(data.preco),
+      qtd: Number(data.qtd),
+      taxas: Number(data.taxas),
+      observacao: data.observacao,
     };
-    await api.put(`/operacoes/atualizar/${operation_id}`, data).then(response => {
-      const index = selectedToEdit.indexOf(operation_id);
+
+    api.put(`/operacoes/atualizar/${data.id}`, dataParsed).then(response => {
+
+      const index = selectedToEdit.indexOf(data.id);
+
       selectedToEdit.splice(index, index);
+
       setselectedToEdit([...selectedToEdit]);
+
+      api.get('/operacoes').then(response => {
+        setOperations(response.data.result);
+      }).catch((error) => {
+        setOperationsError(error.response.data.error);
+      });
     }).catch((error) => {
       setOperationsError(error.response.data.error);
     });
-    
-  }, []);
+  }, [selectedToEdit]);
 
   useEffect(() => {
     api.get('/operacoes').then(response => {
@@ -140,7 +166,7 @@ export function Operations() {
     }).catch((error) => {
       setOperationsError(error.response.data.error);
     });
-  }, [newOperations, handleDeleteAllOperations, handleDeleteOperation, handleRecalculateOperations]);
+  }, [newOperations, handleSaveOperation]);
 
   return (
     <Container>
@@ -152,7 +178,6 @@ export function Operations() {
       <Content>
         <Jexcel/>
 
-        <h1>Minhas Operações</h1>
         {!operations.length ? (
           <NotOperation>
             <img src={spreadsheetImage} alt="Imagem de spreadsheet" />
@@ -164,160 +189,187 @@ export function Operations() {
         ) : (
         <>
           <div>
-            <button 
-              type="button" 
-              disabled={recalculateOperationsLoader} 
-              onClick={handleRecalculateOperations}> 
-              {recalculateOperationsLoader ? 'Carregando...': 'Recalcular'} 
-            </button>
-            <button  
-              className="delete"
-              type="button" 
-              disabled={deleteAllOperationsLoader} 
-              onClick={handleDeleteAllOperations}> 
-              {deleteAllOperationsLoader ? 'Carregando...': 'Excluir todas'} 
-            </button>
+            <h1>Minhas Operações</h1>
+            <div>
+              <button 
+                type="button" 
+                disabled={recalculateOperationsLoader} 
+                onClick={handleRecalculateOperations}> 
+                {recalculateOperationsLoader ? 'Carregando...': 'Recalcular'} 
+              </button>
+              <button  
+                className="delete"
+                type="button" 
+                disabled={deleteAllOperationsLoader} 
+                onClick={handleDeleteAllOperations}> 
+                {deleteAllOperationsLoader ? 'Carregando...': 'Excluir todas'} 
+              </button>
+            </div>
           </div>
           {operationsError && <p>{operationsError}</p>}
           <Section>
-            <Table>
-              <thead>
-                <tr>
-                  <td>ativo</td>
-                  <td>date</td>
-                  <td>evento</td>
-                  <td>qtd</td>
-                  <td>preco</td>
-                  <td>taxas</td>
-                  <td>corretora</td>
-                  <td>irrf</td>
-                  <td>moeda</td>
-                  <td>observacao</td>
-                  <td>daytrade</td>
-                  <td>classe</td>
-                  <td>fluxo_caixa</td>
-                  <td>volume</td>
-                  <td>lucro</td>
-                  <td>qtd_atual</td>
-                  <td>pm_atual</td>
-                  <td>qtd_ant</td>
-                  <td>pm_ant</td>
-                  <td>ptax</td>
-                  <td>pm_fx</td>
-                  <td>pm_ptax</td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </thead>
-              <tbody>
-                {operations.map((operation) => (
-                  <tr key={operation.id}>
-                    <td>{operation.ativo}</td>
-                    <td>
-                      <input 
-                        type="date" 
-                        defaultValue={operation.date.toString()} 
-                        disabled={!selectedToEdit.includes(operation.id)}
+              <Table>
+                <div className="thead"> {/* thead*/}
+                  <div className="tr"> {/* tr*/}
+                    <span>ativo</span>
+                    <span>date</span>
+                    <span>evento</span>
+                    <span>qtd</span>
+                    <span>preco</span>
+                    <span>taxas</span>
+                    <span>corretora</span>
+                    <span>irrf</span>
+                    <span>moeda</span>
+                    <span>observacao</span>
+                    <span>daytrade</span>
+                    <span>classe</span>
+                    <span>fluxo_caixa</span>
+                    <span>volume</span>
+                    <span>lucro</span>
+                    <span>qtd_atual</span>
+                    <span>pm_atual</span>
+                    <span>qtd_ant</span>
+                    <span>pm_ant</span>
+                    <span>ptax</span>
+                    <span>pm_fx</span>
+                    <span>pm_ptax</span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+                <div className="tbody"> {/* tbody */}
+                  {operations.map((operation) => (
+                    <Form ref={formRef} onSubmit={handleSaveOperation} className="tr" key={operation.id}> {/* tr*/}
+                      <span>{operation.ativo}</span>
+                      <span>
+                        <Input 
+                          type="date" 
+                          defaultValue={operation.date.toString()} 
+                          disabled={!selectedToEdit.includes(operation.id)}
+                          name="date"
+                          />
+                      </span>
+                      <span> 
+                        <Input 
+                          type="text" 
+                          disabled={!selectedToEdit.includes(operation.id)} 
+                          defaultValue={operation.evento}
+                          placeholder="Evento"
+                          name="evento"
+                          />
+                      </span>
+                      <span> 
+                        <Input 
+                          type="number" 
+                          disabled={!selectedToEdit.includes(operation.id)} 
+                          defaultValue={operation.qtd ? operation.qtd : 0}
+                          placeholder="0"
+                          name="qtd"
                         />
-                    </td>
-                    <td> 
-                      <input 
-                        type="text" 
-                        disabled={!selectedToEdit.includes(operation.id)} 
-                        defaultValue={operation.evento}
-                        placeholder="Evento"
+                      </span>
+                      <span> 
+                        <Input 
+                          type="number" 
+                          disabled={!selectedToEdit.includes(operation.id)} 
+                          defaultValue={operation.preco ? operation.preco : 0}
+                          placeholder="0"
+                          name="preco"
                         />
-                    </td>
-                    <td> 
-                      <input 
-                        type="number" 
-                        disabled={!selectedToEdit.includes(operation.id)} 
-                        defaultValue={operation.qtd}
-                        placeholder="Qtd"
-                      />
-                    </td>
-                    <td> 
-                      <input 
-                        type="number" 
-                        disabled={!selectedToEdit.includes(operation.id)} 
-                        defaultValue={operation.preco}
-                        placeholder="Preço"
-                      />
-                    </td>
-                    <td> 
-                      <input 
-                        type="number" 
-                        disabled={!selectedToEdit.includes(operation.id)} 
-                        defaultValue={operation.taxas}
-                        placeholder="Taxas"
-                      />
-                    </td>
-                    <td>{operation.corretora}</td>
-                    <td> 
-                      <input 
-                        type="number" 
-                        disabled={!selectedToEdit.includes(operation.id)} 
-                        defaultValue={operation.irrf}
-                        placeholder="irrf"
-                      />
-                    </td>
-                    <td> 
-                      <input 
-                        type="text" 
-                        disabled={!selectedToEdit.includes(operation.id)} 
-                        defaultValue={operation.moeda}
-                        placeholder="Moeda"
-                      />
-                    </td>
-                    <td> 
-                      <input 
-                        type="text" 
-                        disabled={!selectedToEdit.includes(operation.id)} 
-                        defaultValue={operation.observacao}
-                      />
-                    </td>
-                    <td>{operation.daytrade ? 'True' : 'False'}</td>
-                    <td>{operation.classe}</td>
-                    <td>{operation.fluxo_caixa.toFixed(4)}</td>
-                    <td>{operation.volume.toFixed(4)}</td>
-                    <td>{operation.lucro.toFixed(4)}</td>
-                    <td>{operation.qtd_atual.toFixed(4)}</td>
-                    <td>{operation.pm_atual.toFixed(4)}</td>
-                    <td>{operation.qtd_ant.toFixed(4)}</td>
-                    <td>{operation.pm_ant.toFixed(4)}</td>
-                    <td>{operation.ptax.toFixed(4)}</td>
-                    <td>{operation.pm_fx.toFixed(4)}</td>
-                    <td>{operation.pm_ptax.toFixed(4)}</td>
-                    <td>
-                      {selectedToEdit.includes(operation.id) ? (
-
-                        <button 
-                        type="button" 
-                        className="buttonSave" 
-                        onClick={() => handleSaveOperation(operation.id, operation)}>
-                          Salvar
-                      </button>
-                      ) : (
-                      <button 
-                        type="button" 
-                        className="buttonEdit" 
-                        onClick={() => handleEditOperation(operation.id)}>
-                          Editar
-                      </button>
-                      )}
-                    </td>
-                    <td>
-                      <button
-                        type="button" 
-                        className="buttonDelete" 
-                        onClick={() => handleDeleteOperation(operation.id)}>
-                          Excluir
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+                      </span>
+                      <span> 
+                        <Input 
+                          type="number" 
+                          disabled={!selectedToEdit.includes(operation.id)} 
+                          defaultValue={operation.taxas ? operation.taxas : 0}
+                          placeholder="0"
+                          name="taxas"
+                        />
+                      </span>
+                      <span>{operation.corretora}</span>
+                      <span> 
+                        <Input 
+                          type="number" 
+                          disabled={!selectedToEdit.includes(operation.id)} 
+                          defaultValue={operation.irrf ? operation.irrf : 0}
+                          placeholder="0"
+                          name="irrf"
+                        />
+                      </span>
+                      <span> 
+                        <Input 
+                          type="text" 
+                          disabled={!selectedToEdit.includes(operation.id)} 
+                          defaultValue={operation.moeda ? operation.moeda : 'BRL'}
+                          placeholder="BRL"
+                          maxLength={3}
+                          name="moeda"
+                        />
+                      </span>
+                      <span> 
+                        <Input 
+                          type="text" 
+                          disabled={!selectedToEdit.includes(operation.id)} 
+                          defaultValue={operation.observacao}
+                          name="observacao"
+                        />
+                      </span>
+                      <span>{operation.daytrade ? 'True' : 'False'}</span>
+                      <span>{operation.classe}</span>
+                      <span>{operation.fluxo_caixa.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>{operation.volume.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>{operation.lucro.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>{operation.qtd_atual.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>{operation.pm_atual.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>{operation.qtd_ant.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>{operation.pm_ant.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>{operation.ptax.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>{operation.pm_fx.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>{operation.pm_ptax.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>
+                        {selectedToEdit.includes(operation.id) ? (
+                        <div>
+                          <button 
+                            type="submit" 
+                            className="button" 
+                          >
+                            <img src={checkImage} alt="Check" />
+                          </button>
+                          <button 
+                            type="button" 
+                            className="button" 
+                            onClick={() => handleCloseOperation(operation.id)}>
+                              <img src={closeImage} alt="Close" />
+                          </button>
+                        </div>
+                        ) : (
+                          <div>
+                            <p 
+                              className="buttonEdit" 
+                              onClick={() => handleEditOperation(operation.id)}>
+                                Editar
+                            </p>
+                          </div>
+                        )}
+                      </span>
+                      <span>
+                        <div>
+                          <button
+                            type="button" 
+                            className="buttonDelete" 
+                            onClick={() => handleDeleteOperation(operation.id)}>
+                              Excluir
+                          </button>
+                        </div>
+                      </span>
+                      <Input 
+                        className="none"
+                        disabled
+                        value={operation.id}
+                        name="id" />
+                    </Form> 
+                  ))}
+                </div>
+              </Table>
           </Section>
         </>
         )}
