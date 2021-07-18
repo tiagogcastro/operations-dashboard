@@ -9457,14 +9457,14 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-jspreadsheet-ce@^4.7.3:
-  version "4.7.3"
-  resolved "https://registry.yarnpkg.com/jspreadsheet-ce/-/jspreadsheet-ce-4.7.3.tgz#5ef89193998303fd0bb60c9c25b1985ae40ae829"
-  integrity sha512-xr+OoovzNgBWCqQflzUfMnKWm+WeigSKfcGRUgESE4g/4AT7PUqrmFCoKb4+VcP7gc6tsT5bUqFi0DCUmlDRxg==
+jspreadsheet-ce@4.6.3:
+  version "4.6.3"
+  resolved "https://registry.yarnpkg.com/jspreadsheet-ce/-/jspreadsheet-ce-4.6.3.tgz#37402536d8e09c8f2202a6f80c3ad7b76df43754"
+  integrity sha512-g4MKE6Atm8ClNfaGEcgHvjYHNW1ZhUH4rYal9c7cDqytlRWyinxD/yfOiLvKYFEM9UZD/DkdvpDPmjT6pJ7XWQ==
   dependencies:
-    jsuites "^4.3.0"
+    jsuites "^4.1.0"
 
-jsuites@^4.3.0:
+jsuites@^4.1.0:
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/jsuites/-/jsuites-4.7.4.tgz#0a03fa722c73f54b5e886d201ed647c9cec299c5"
   integrity sha512-O8SuddbczrK42Qn+KZ40Y10zV5thpHjtC/8XSGEP7WoTGeM2QGbPLXV0zlp1W/sGHQD9yH2kPe4EwCn1hASc8Q==
