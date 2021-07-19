@@ -140,8 +140,26 @@ export const Table = styled.div`
       border-bottom: 1px solid #dddddd;
 
       input {
-        width: 120px;
+        width: 75px;
         padding: 4px 12px;
+        overflow-x: auto;
+      }
+
+      input[type="date"] {
+        width: 140px;    
+        flex-direction: row-reverse;
+      }
+
+      input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-calendar-picker-indicator {
+          display: none;
+          -webkit-appearance: none;
+      }
+
+      input[type="date"]:disabled::-webkit-inner-spin-button,
+        input[type="date"]:disabled::-webkit-calendar-picker-indicator {
+          display: none;
+          -webkit-appearance: none;
       }
 
       div {
