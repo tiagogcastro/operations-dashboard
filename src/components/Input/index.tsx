@@ -1,7 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, InputHTMLAttributes } from 'react';
 import { useField } from '@unform/core';
 
-export const Input = ({ name, type, ...rest }: any) => {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement>  {
+  name: string;
+  type: string;
+};
+
+export const Input = ({ name, type, ...rest }: InputProps) => {
   const inputRef = useRef(null);
 
   const { fieldName, registerField } = useField(name);
