@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useNewOperation } from '../../contexts/NewOperationsContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -69,11 +69,10 @@ export function Operations() {
     const confirmation = window.confirm('Tem certeza que deseja deletar todas as operações?');
     if(confirmation) {
       api.delete('/operacoes/excluir/todas').then(response => {
-        setOperations(response.data);
         setDeleteAllOperationsLoader(false)
       }).catch((error)=> {
         setDeleteAllOperationsLoader(false)
-        setOperationsError(error.response.data.error);
+        // setOperationsError(error.response.data.error);
       });
     }
   }, []);
@@ -86,10 +85,10 @@ export function Operations() {
       api.get('/operacoes').then(response => {
         setOperations(response.data.result);
       }).catch((error) => {
-        setOperationsError(error.response.data.error);
+        // setOperationsError(error.response.data.error);
       });
     }).catch((error) => {
-      setOperationsError(error.response.data.error);
+      // setOperationsError(error.response.data.error);
     });
   }, []);
 
@@ -122,10 +121,10 @@ export function Operations() {
         api.get('/operacoes').then(response => {
           setOperations(response.data.result);
         }).catch((error) => {
-          setOperationsError(error.response.data.error);
+          // setOperationsError(error.response.data.error);
         });
       }).catch((error) => {
-        setOperationsError(error.error)
+        // setOperationsError(error.error)
       });
     }
   }, []);
@@ -153,10 +152,10 @@ export function Operations() {
       api.get('/operacoes').then(response => {
         setOperations(response.data.result);
       }).catch((error) => {
-        setOperationsError(error.response.data.error);
+        // setOperationsError(error.response.data.error);
       });
     }).catch((error) => {
-      setOperationsError(error.response.data.error);
+      // setOperationsError(error.response.data.error);
     });
   }, [selectedToEdit]);
 
@@ -164,9 +163,31 @@ export function Operations() {
     api.get('/operacoes').then(response => {
       setOperations(response.data.result);
     }).catch((error) => {
-      setOperationsError(error.response.data.error);
+      // setOperationsError(error.response.data.error);
     });
   }, [newOperations, handleSaveOperation]);
+
+  const parseToLocaleString = useCallback((operation_field: string | number) => {
+    return operation_field ? operation_field.toLocaleString('Pt-br', {maximumFractionDigits: 4}) : 0;
+  }, []);
+
+  const operationsUpdated = useMemo(() => {
+    return operations.map(operation => {
+      return {
+        ...operation,
+        fluxo_caixa: parseToLocaleString(operation.fluxo_caixa),
+        volume: parseToLocaleString(operation.volume),
+        lucro: parseToLocaleString(operation.lucro),
+        qtd_atual: parseToLocaleString(operation.qtd_atual),
+        pm_atual: parseToLocaleString(operation.pm_atual),
+        qtd_ant: parseToLocaleString(operation.qtd_ant),
+        pm_ant: parseToLocaleString(operation.pm_ant),
+        ptax: parseToLocaleString(operation.ptax),
+        pm_fx: parseToLocaleString(operation.pm_fx),
+        pm_ptax: parseToLocaleString(operation.pm_ptax),
+      }
+    })
+  }, [operations, parseToLocaleString]);
 
   return (
     <Container>
@@ -238,7 +259,7 @@ export function Operations() {
                   </div>
                 </div>
                 <div className="tbody"> {/* tbody */}
-                  {operations.map((operation) => (
+                  {operationsUpdated.map((operation) => (
                     <Form ref={formRef} onSubmit={handleSaveOperation} className="tr" key={operation.id}> {/* tr*/}
                       <span>{operation.ativo}</span>
                       <span>
@@ -260,7 +281,7 @@ export function Operations() {
                       </span>
                       <span> 
                         <Input 
-                          type="number" 
+                          type="text" 
                           disabled={!selectedToEdit.includes(operation.id)} 
                           defaultValue={operation.qtd ? operation.qtd : 0}
                           placeholder="0"
@@ -269,7 +290,7 @@ export function Operations() {
                       </span>
                       <span> 
                         <Input 
-                          type="number" 
+                          type="text" 
                           disabled={!selectedToEdit.includes(operation.id)} 
                           defaultValue={operation.preco ? operation.preco : 0}
                           placeholder="0"
@@ -278,7 +299,7 @@ export function Operations() {
                       </span>
                       <span> 
                         <Input 
-                          type="number" 
+                          type="text" 
                           disabled={!selectedToEdit.includes(operation.id)} 
                           defaultValue={operation.taxas ? operation.taxas : 0}
                           placeholder="0"
@@ -288,7 +309,7 @@ export function Operations() {
                       <span>{operation.corretora}</span>
                       <span> 
                         <Input 
-                          type="number" 
+                          type="text" 
                           disabled={!selectedToEdit.includes(operation.id)} 
                           defaultValue={operation.irrf ? operation.irrf : 0}
                           placeholder="0"
@@ -315,16 +336,16 @@ export function Operations() {
                       </span>
                       <span>{operation.daytrade ? 'True' : 'False'}</span>
                       <span>{operation.classe}</span>
-                      <span>{operation.fluxo_caixa.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
-                      <span>{operation.volume.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
-                      <span>{operation.lucro.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
-                      <span>{operation.qtd_atual.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
-                      <span>{operation.pm_atual.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
-                      <span>{operation.qtd_ant.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
-                      <span>{operation.pm_ant.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
-                      <span>{operation.ptax.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
-                      <span>{operation.pm_fx.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
-                      <span>{operation.pm_ptax.toLocaleString('Pt-br', {maximumFractionDigits: 4})}</span>
+                      <span>{operation.fluxo_caixa}</span>
+                      <span>{operation.volume}</span>
+                      <span>{operation.lucro}</span>
+                      <span>{operation.qtd_atual}</span>
+                      <span>{operation.pm_atual}</span>
+                      <span>{operation.qtd_ant}</span>
+                      <span>{operation.pm_ant}</span>
+                      <span>{operation.ptax}</span>
+                      <span>{operation.pm_fx}</span>
+                      <span>{operation.pm_ptax}</span>
                       <span>
                         {selectedToEdit.includes(operation.id) ? (
                         <div>
@@ -362,6 +383,7 @@ export function Operations() {
                         </div>
                       </span>
                       <Input 
+                        type="text"
                         className="none"
                         disabled
                         value={operation.id}
