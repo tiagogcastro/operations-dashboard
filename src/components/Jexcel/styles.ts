@@ -59,19 +59,30 @@ export const JexcelTable = styled.div`
   tr {
     td {
       font-size: 1.6rem;
+      position: relative;
+
+      div {
+      display: block;
+      gap: 0;
+      font-size: 1.2rem;
+    }
+
+    .jdropdown-container {
+      position: fixed;
+    }
 
       input {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
       }
     }
   }
   
   tbody {
-    div {
-      display: block;
-      gap: 0;
-      font-size: 1.2rem;
+
+    td {
+      font-size: 1.4rem
     }
+  
     tr {
       font-size: 2.4rem;
       
