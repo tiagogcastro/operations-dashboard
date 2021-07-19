@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useField } from '@unform/core';
 
 export const Input = ({ name, type, ...rest }: any) => {
-  const inputRef = useRef(null)
+  const inputRef = useRef(null);
 
-  const { fieldName, registerField } = useField(name)
+  const { fieldName, registerField } = useField(name);
 
   useEffect(() => {
     registerField({
@@ -20,7 +20,7 @@ export const Input = ({ name, type, ...rest }: any) => {
         ref.current.value = ''
       },
     })
-  }, [fieldName, registerField])
+  }, [fieldName, registerField]);
 
   useEffect(() => {}, [])
   return (
@@ -28,7 +28,6 @@ export const Input = ({ name, type, ...rest }: any) => {
       name={name}
       ref={inputRef}
       type={type}
-      placeholder="Type your username"
       {...rest}
     />
   );
