@@ -11,6 +11,9 @@ import {
   Container,
   Content
 } from './styles';
+import { Form } from '@unform/web';
+import { Input } from '../../components/Input';
+import Select from '../../components/Select';
 
 type UserConfig = {
   dt_vd20k: 0 | 1;
@@ -67,31 +70,23 @@ export function CalculationSetup() {
     const date = new Date();
 
     const year = date.getFullYear();
-
     if(config.darf_inicio > year || config.darf_inicio < 2000) {
-      console.log(config.darf_inicio)
       setInputErrors({text: 'Preencha o Ano de inicio dos calculos com uma data válida.', className: 'inputError'});
       setLoader(false);
       return;
     }
-
     api.put('/usuario/config', config).then(response => {
       setInputErrors({text: ''})
       setUserConfig(response.data);
-      console.log(response.data);
       setLoader(false);
-
-      api.get('/usuario/config').then(response => {
-        setUserConfig(response.data);
-      });
     });
   }, []);
 
   useEffect(() => {
     api.get('/usuario/config').then(response => {
-      setUserConfig(response.data);
-    });
-  }, [])
+    setUserConfig(response.data);
+  });
+  }, [handleUpdateUserConfiguration])
 
   return (
     <Container>
@@ -102,53 +97,54 @@ export function CalculationSetup() {
       <SubHeader />
       <Content>
         <h1>Configurações do usuário</h1>
-        <form onSubmit={handleSubmit(handleUpdateUserConfiguration)}>
+        {!userConfig ? (<p>Carregando...</p>) : (
+        <Form onSubmit={handleUpdateUserConfiguration}>
           <section>
             <aside>
               <h2>DARF - Configuração de Calculos</h2>
               <div>
                 <div>
                   <label>Somar vendas de dayrade no limite 20k</label>
-                  <select {...register("dt_vd20k")} defaultValue={userConfig?.dt_vd20k}>
+                  <Select name="dt_vd20k" defaultValue={userConfig?.dt_vd20k}>
                     <option value={1}>true</option>
                     <option value={0}>false</option>
-                  </select>
+                  </Select>
                 </div>
                 <div>
                   <label>Somar vendas de opções classes no limite 20k</label>
-                  <select {...register("opções_vd20k")} defaultValue={userConfig?.opcoes_vd20k}>
+                  <Select name="opções_vd20k" defaultValue={userConfig?.opcoes_vd20k}>
                     <option value={1}>true</option>
                     <option value={0}>false</option>
-                  </select>
+                  </Select>
                 </div>
                 <div>
                   <label>Somar vendas de outras classes no limite 20k</label>
-                  <select {...register("outros_vd20k")} defaultValue={userConfig?.outros_vd20k}>
+                  <Select name="outros_vd20k" defaultValue={userConfig?.outros_vd20k}>
 
                     <option value={1}>true</option>
                     <option value={0}>false</option>
-                  </select>
+                  </Select>
                 </div>
                 <div>
                   <label>Venda de subscrição de FII tributar 20%</label>
-                  <select {...register("vsub_FII")} defaultValue={userConfig?.vsub_FII}>
+                  <Select name="vsub_FII" defaultValue={userConfig?.vsub_FII}>
                     <option value={1}>true</option>
                     <option value={0}>false</option>
-                  </select>
+                  </Select>
                 </div>
                 <div>
                   <label>Venda de subscrição de FII como isento</label>
-                  <select {...register("vsub_isento")} defaultValue={userConfig?.vsub_isento}>
+                  <Select name="vsub_isento" defaultValue={userConfig?.vsub_isento}>
                     <option value={0}>false</option>
                     <option value={1}>true</option>
-                  </select>
+                  </Select>
                 </div>
                 <div>
                   <label>Considerar BDR como Ação (isenções) </label>
-                  <select {...register("bdr_like_acao")} defaultValue={userConfig?.bdr_like_acao}>
+                  <Select name="bdr_like_acao" defaultValue={userConfig?.bdr_like_acao}>
                     <option value={0}>false</option>
                     <option value={1}>true</option>
-                  </select>
+                  </Select>
                 </div>
               </div>
             </aside>
@@ -158,23 +154,23 @@ export function CalculationSetup() {
               <div>
                 <div>
                   <label>Ano de início dos calculos DARF (ex. 2020)</label>
-                  <input {...register("darf_inicio")} type="number" defaultValue={userConfig?.darf_inicio} />
+                  <Input name="darf_inicio" type="text" defaultValue={userConfig?.darf_inicio} />
                 </div>
                 <div>
                   <label>Prejuízo normal até inicio DARF (negativo)</label>
-                  <input {...register("tributavel_normal")} type="text" defaultValue={userConfig?.tributavel_normal} />
+                  <Input name="tributavel_normal" type="text" defaultValue={userConfig?.tributavel_normal} />
                 </div>
                 <div>
                   <label>Prejuízo daytrade até inicio DARF (negativo)</label>
-                  <input {...register("tributavel_daytrade")} type="text" defaultValue={userConfig?.tributavel_daytrade} />
+                  <Input name="tributavel_daytrade" type="text" defaultValue={userConfig?.tributavel_daytrade} />
                 </div>
                 <div>
                   <label>Prejuízo FII até inicio da DARF (negativo)</label>
-                  <input {...register("tributavel_fii")} type="text" defaultValue={userConfig?.tributavel_fii} />
+                  <Input name="tributavel_fii" type="text" defaultValue={userConfig?.tributavel_fii} />
                 </div>
                 <div>
                   <label>Saldo de DARF a pagar até inicio DARF (positivo)</label>
-                  <input {...register("darf_total")} type="text" defaultValue={userConfig?.darf_total} />
+                  <Input name="darf_total" type="text" defaultValue={userConfig?.darf_total} />
                 </div>
               </div>
             </aside>
@@ -184,26 +180,27 @@ export function CalculationSetup() {
               <div>
                 <div>
                   <label>Moeda base de cálculos</label>
-                  <input type="text" {...register("moeda_base")} defaultValue={userConfig?.moeda_base} maxLength={3} />
+                  <Input type="text" name="moeda_base" defaultValue={userConfig?.moeda_base} maxLength={3} />
                 </div>
                 <div>
                   <label>Qtd de dias de liquidação PTAX</label>
-                  <input {...register("dia_liq_ptax")} type="number" defaultValue={userConfig?.dia_liq_ptax} />
+                  <Input name="dia_liq_ptax" type="number" defaultValue={userConfig?.dia_liq_ptax} />
                 </div>
 
                 <div>
                   <label>Cálculo de operações por corretora</label>
-                  <select {...register("calc_por_corretora")} defaultValue={userConfig?.calc_por_corretora}>
+                  <Select name="calc_por_corretora" defaultValue={userConfig?.calc_por_corretora}>
                     <option value={1}>true</option>
                     <option value={0}>false</option>
-                  </select>
+                  </Select>
                 </div>
               </div>
             </aside>
           </section>
           {inputErrors?.text && <p className={inputErrors.className}><strong>Erro:</strong> {inputErrors.text}</p>}
           <button type="submit">{loader ? 'Atualizando...' : 'Salvar configurações'}</button>
-        </form>
+        </Form>
+        )}
       </Content>
     </Container>
   );
