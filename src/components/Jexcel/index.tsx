@@ -169,7 +169,7 @@ export function Jexcel() {
       <h1>Criar Operações</h1>
       <aside>
         <button type="button" onClick={handleAddNewRow}> Adicionar linha </button>
-        <button type="button" disabled={newOperationLoader} onClick={handleInsertNewOperations}> {newOperationLoader ? 'Carregando...': 'Inserir Operações'} </button>
+        <button className="insertButton" type="button" disabled={newOperationLoader} onClick={handleInsertNewOperations}> {newOperationLoader ? 'Carregando...': 'Inserir Operações'} </button>
       </aside>
       {error && <p>{error}</p>}
     </Content>

@@ -11,7 +11,8 @@ type ContentProps = {
 }
 
 export const Content = styled.header<ContentProps>`
-  max-width: 1260px;
+  max-width: 1800px;
+  padding: 0 32px;
   width: 100%;
   margin: 0 auto;
 

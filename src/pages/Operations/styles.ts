@@ -9,9 +9,9 @@ export const Container = styled.div`
 
 export const Content = styled.div`
   width: 100%;
-  max-width: 1260px;
+  max-width: 1800px;
   margin: 0 auto;
-  padding: 0 0 128px;
+  padding: 0 32px 128px;
   
   > p {
     color: red;
@@ -60,10 +60,8 @@ export const Section = styled.section`
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  overflow-x: scroll;
+  overflow-x: auto;
   flex-direction: column;
-  border-left: 1px solid #dddddd;
-  border-right: 1px solid #dddddd;
 `;
 
 export const NotOperation = styled.section`
@@ -98,10 +96,10 @@ export const NotOperation = styled.section`
 `;
 
 export const Table = styled.div`
-  margin: 0 auto;
-  width: 80%;
-  max-width: 960px;
+  width: 100%;
   display: table;
+  border: 1px solid #dddddd;
+  border-bottom: none;
   border-collapse: separate;
 
   .thead {

@@ -5,6 +5,7 @@ export const Container = styled.section`
   width: 100%;
   display: flex;
   flex-direction: column;
+  max-width: 1800px;
   align-items: flex-start;
 `;
 
@@ -24,7 +25,8 @@ export const Content = styled.section`
 
   aside {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 12px;
     width: 100%;
     align-items: center;
 
@@ -41,14 +43,26 @@ export const Content = styled.section`
         filter: brightness(90%);
       }
     }
+
+    button.insertButton {
+      background: #009879;
+    }
   }
 `;
 
 export const JexcelTable = styled.div`
-
+  overflow-x: auto;
+  table {
+    table-layout: auto;
+  }
+  
   tr {
     td {
-      font-size: 2rem;
+      font-size: 1.6rem;
+
+      input {
+        font-size: 1.6rem;
+      }
     }
   }
   
@@ -59,7 +73,7 @@ export const JexcelTable = styled.div`
       font-size: 1.2rem;
     }
     tr {
-      font-size: 3rem;
+      font-size: 2.4rem;
       
     }
   }
