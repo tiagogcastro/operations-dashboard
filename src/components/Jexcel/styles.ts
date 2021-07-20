@@ -54,6 +54,7 @@ export const JexcelTable = styled.div`
   overflow-x: auto;
   table {
     table-layout: auto;
+    width: 100%;
   }
   
   tr {
