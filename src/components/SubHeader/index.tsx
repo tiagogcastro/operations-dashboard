@@ -9,7 +9,7 @@ export function SubHeader() {
   return (
     <Container>
       <Content>
-        <Link to="/token">Dashboard</Link>
+        <Link to="/token">Carteira</Link>
         <Link to="/operacoes">Operações</Link>
         {/* <Link to="/proventos">Proventos</Link> */}
         {/* <Link to="/eventos">Eventos</Link>   */}
