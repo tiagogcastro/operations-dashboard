@@ -29,7 +29,7 @@ export function Header(props: HeaderProps) {
           <img src={props.imagem} alt={props.nome} />
           <span>{props.nome}</span>
           <div className="dropdown-menu">
-            <Link to="/perfil">Perfil</Link>
+            <Link to="#" className="disabled">Perfil</Link>
             <Link to="/config-calculo">Configurações</Link>
             <button onClick={signOut}>Sair</button>
           </div>
