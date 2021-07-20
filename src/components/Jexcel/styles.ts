@@ -62,6 +62,19 @@ export const JexcelTable = styled.div`
       font-size: 1.6rem;
       position: relative;
 
+      
+      .jcalendar-container {
+
+        .jcalendar-container {
+          top: 0;
+          left: 0;
+          
+          .jcalendar-content {
+            position: fixed;
+          }
+        }
+      }
+
       div {
       display: block;
       gap: 0;
