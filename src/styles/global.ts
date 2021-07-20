@@ -44,14 +44,13 @@ export default createGlobalStyle`
   body, input, button {
     font-size: 1rem;
   }
-/*
-  h1, h2, h3, h4, h5, h6, strong {
-    font-weight: 600;
-    font-size: 1rem;
-  } */
   
   button, a {
     cursor: pointer;
     color: var(--semi-white);
+  }
+
+  .disabled {
+    cursor: no-drop;
   }
 `
