@@ -40,7 +40,7 @@ export const Section = styled.section`
   flex-direction: column;
 `;
 
-export const NotOperation = styled.section`
+export const NotCarteira = styled.section`
   display: flex;
   width: 100%;
   max-width: 1260px;

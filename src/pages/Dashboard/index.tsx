@@ -7,9 +7,12 @@ import { api } from '../../services/api';
 import { Header } from '../../components/Header';
 import { SubHeader } from '../../components/SubHeader';
 
+import spreadsheetImage from '../../assets/images/spreadsheet.svg';
+
 import {
   Container,
   Content,
+  NotCarteira,
   Section,
   Table
 } from './styles';
@@ -47,11 +50,9 @@ export function Dashboard() {
   useEffect(() => {
     if(paramsToken) {
       signInWithGoogle(paramsToken);
-      return;
     }
     api.get(`/carteira`).then(response => {
       setCarteira(response.data);
-      console.log(response.data);
     });
 
   }, [paramsToken, token, history, signInWithGoogle]);
@@ -88,6 +89,16 @@ export function Dashboard() {
         <div>
           <h1>Carteira</h1>
         </div>
+        {!carteira.length ? (
+        <NotCarteira>
+          <img src={spreadsheetImage} alt="Imagem de spreadsheet" />
+          <div>
+            <h2>Me parece que você não tem nenhum dado na Carteira</h2>
+            <h3>Crie alguns agora mesmo!</h3>
+          </div>
+        </NotCarteira>
+        ) : (
+
         <Section>
           <Table>
             <div className="thead">
@@ -137,6 +148,8 @@ export function Dashboard() {
             </div>
           </Table>
         </Section>
+        )}
+
       </Content>
     </Container>
   )
