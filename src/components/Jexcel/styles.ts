@@ -51,38 +51,19 @@ export const Content = styled.section`
 `;
 
 export const JexcelTable = styled.div`
-  overflow-x: auto;
   table {
     table-layout: auto;
     width: 100%;
   }
-  
+
   tr {
     td {
       font-size: 1.6rem;
-      position: relative;
-
-      
-      .jcalendar-container {
-
-        .jcalendar-container {
-          top: 0;
-          left: 0;
-          
-          .jcalendar-content {
-            position: fixed;
-          }
-        }
-      }
-
+ 
       div {
       display: block;
       gap: 0;
       font-size: 1.2rem;
-    }
-
-    .jdropdown-container {
-      position: fixed;
     }
 
       input {

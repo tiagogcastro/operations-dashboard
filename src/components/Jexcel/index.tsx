@@ -5,7 +5,6 @@ import { api } from '../../services/api';
 
 import {Events} from '../../config/Events';
 
-import "../../../node_modules/jspreadsheet-ce/dist/jspreadsheet.css";
 import {
   Container,
   Content,
@@ -25,10 +24,6 @@ export type NewOperation = {
   preco: number;
   qtd: number;
   taxas: string;
-}
-
-export type JexcelHandles = {
-  newOperations: NewOperation[]
 }
 
 export function Jexcel() {

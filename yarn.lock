@@ -2636,7 +2636,7 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.8.tgz#edf1bf1dbf4e04413ca8e5b17b3b7d7d54b59818"
   integrity sha512-YSBPTLTVm2e2OoQIDYx8HaeWJ5tTToLH67kXR7zYNGupXMEHa2++G8k+DczX2cFVgalypqtyZIcU19AFcmOpmg==
 
-"@types/jspreadsheet-ce@^4.7.1":
+"@types/jspreadsheet-ce@^4.7.2":
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/@types/jspreadsheet-ce/-/jspreadsheet-ce-4.7.2.tgz#06d1b8225f459564ef260290a0e59160aeeac360"
   integrity sha512-Q/lxDSg6ZlxmcWR/RIs2HFXkPCk4nRn6J4qceWIt2Z3+gYNppBfv9Q8Vr1PtaigTFZdd2i8+jo1IVKqxwls1Hw==
@@ -9555,18 +9555,6 @@ jsonfile@^6.0.1:
     universalify "^2.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
-
-jspreadsheet-ce@4.6.3:
-  version "4.6.3"
-  resolved "https://registry.yarnpkg.com/jspreadsheet-ce/-/jspreadsheet-ce-4.6.3.tgz#37402536d8e09c8f2202a6f80c3ad7b76df43754"
-  integrity sha512-g4MKE6Atm8ClNfaGEcgHvjYHNW1ZhUH4rYal9c7cDqytlRWyinxD/yfOiLvKYFEM9UZD/DkdvpDPmjT6pJ7XWQ==
-  dependencies:
-    jsuites "^4.1.0"
-
-jsuites@^4.1.0:
-  version "4.7.4"
-  resolved "https://registry.yarnpkg.com/jsuites/-/jsuites-4.7.4.tgz#0a03fa722c73f54b5e886d201ed647c9cec299c5"
-  integrity sha512-O8SuddbczrK42Qn+KZ40Y10zV5thpHjtC/8XSGEP7WoTGeM2QGbPLXV0zlp1W/sGHQD9yH2kPe4EwCn1hASc8Q==
 
 "jsx-ast-utils@^2.4.1 || ^3.0.0", jsx-ast-utils@^3.1.0:
   version "3.2.0"
