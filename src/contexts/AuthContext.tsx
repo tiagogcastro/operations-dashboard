@@ -55,17 +55,19 @@ export function AuthProvider({children}: AuthProviderProps) {
       const DecodedToken = await decodeToken(token);  
 
       if(error.response?.status === 401) {
-        api.post('/refresh/token/google', {
-          refresh_token: DecodedToken.refresh_token
-        }).then(response => {
-          Cookie.set('@dlombello-withlogin:token', response.data);
-          api.defaults.headers.authorization = `Bearer ${response.data}`;
-          setData({token: response.data}); // retorna o token
-        }).catch(() => {
-          signOut();
-          return;
-        });
-      }
+        history.push('/');
+        return;
+      //   api.post('/refresh/token/google', {
+      //     refresh_token: DecodedToken.refresh_token
+      //   }).then(response => {
+      //     Cookie.set('@dlombello-withlogin:token', response.data);
+      //     api.defaults.headers.authorization = `Bearer ${response.data}`;
+      //     setData({token: response.data}); // retorna o token
+      //   }).catch(() => {
+      //     signOut();
+      //     return;
+      //   });
+      // }
     });
 
     api.get('/usuario').then(response => {
