@@ -70,6 +70,13 @@ export function Operations() {
     if(confirmation) {
       api.delete('/operacoes/excluir/todas').then(response => {
         setDeleteAllOperationsLoader(false)
+        if(response) {
+          api.get('/operacoes').then(response => {
+            setOperations(response.data.result);
+          }).catch((error) => {
+            // setOperationsError(error.response.data.error);
+          });
+        }
       }).catch((error)=> {
         setDeleteAllOperationsLoader(false)
         // setOperationsError(error.response.data.error);
@@ -118,11 +125,13 @@ export function Operations() {
 
     if(confirmation) {
       api.delete(`/operacoes/excluir/${operation_id}` ).then(response => {
-        api.get('/operacoes').then(response => {
-          setOperations(response.data.result);
-        }).catch((error) => {
-          // setOperationsError(error.response.data.error);
-        });
+        if(response) {
+          api.get('/operacoes').then(response => {
+            setOperations(response.data.result);
+          }).catch((error) => {
+            // setOperationsError(error.response.data.error);
+          });
+        }
       }).catch((error) => {
         // setOperationsError(error.error)
       });
